@@ -1,0 +1,16 @@
+server:
+  port: 8761
+
+
+# eurekaserver同时也是eurekaClient所以需要往注册中心注册。
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+    register-with-eureka: false
+
+
+
+spring:
+  application:
+    name: eurekaServer

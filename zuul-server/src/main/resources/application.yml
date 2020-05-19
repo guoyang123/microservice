@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: zuulserver
+
+server:
+  port: 8084
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka,http://localhost:8762/eureka
+
+zuul:
+  routes:
+    myUser:
+      path: /myUser/**
+      serviceId: user
+
+    myCart:
+      path: /myCart/**
+      serviceId: cart
+  ignored-patterns:
+    - /myUser/user/port
+    - /user/user/port
+

@@ -1,0 +1,21 @@
+
+server:
+  port: 9004
+
+spring:
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: CONFIG-SERVER
+      profile: dev
+  application:
+    name: pay
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka,http://localhost:8762/eureka
+
+
+

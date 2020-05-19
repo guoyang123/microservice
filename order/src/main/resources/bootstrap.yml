@@ -1,0 +1,37 @@
+
+spring:
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: CONFIG-SERVER
+      profile: dev
+  application:
+    name: order
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka, http://localhost:8762/eureka
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 10000
+        readTimeout: 10000
+
+  hystrix:
+    enabled: false
+#ribbon:
+#  ReadTimeout: 30000
+#  ConnectTimeout: 30000
+
+logging:
+  level:
+    org.springframework.cloud.openfeign: debug
+
+user:
+  ribbon:
+    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RoundRobinRule
+

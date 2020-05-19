@@ -1,0 +1,114 @@
+version: "2.2"
+services:
+
+    eurekaserver:
+      container_name: eureka
+      build:
+        context: ./eureka
+        dockerfile: Dockerfile
+      ports:
+      - "8761:8761"
+      volumes:
+      - eureka-data:/data
+      networks:
+        web:
+          - ipv4_address: 192.168.2.1
+
+    configserver:
+      container_name: config
+      build:
+        context: ./config
+        dockerfile: Dockerfile
+      ports:
+        - "8085:8085"
+      volumes:
+        - eureka-data:/data
+      networks:
+        web:
+          - ipv4_address: 192.168.2.2
+
+    user:
+      container_name: user
+      build:
+        context: ./user
+        dockerfile: Dockerfile
+      ports:
+      - "8081:8081"
+      volumes:
+      - user-data:/data
+      networks:
+        web:
+          - ipv4_address:  192.168.2.3
+
+
+    product:
+      container_name: product
+      build:
+        context: ./product
+        dockerfile: Dockerfile
+      ports:
+        - "8082:8082"
+      volumes:
+        - user-data:/data
+      networks:
+        web:
+          - ipv4_address:  192.168.2.4
+
+    cart:
+      container_name: cart
+      build:
+        context: ./cart
+        dockerfile: Dockerfile
+      ports:
+        - "8083:8083"
+      volumes:
+        - user-data:/data
+      networks:
+        web:
+          - ipv4_address:  192.168.2.5
+
+    order:
+      container_name: order
+      build:
+        context: ./order
+        dockerfile: Dockerfile
+      ports:
+        - "8084:8084"
+      volumes:
+        - user-data:/data
+      networks:
+        web:
+          - ipv4_address:  192.168.2.6
+volumes:
+  eureka-data:
+  user-data:
+
+networks:
+  web:
+    driver: "bridge"
+    ipam:
+      config:
+        - subnet: 192.168.2.0/24
+          gateway: 192.168.2.254
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
