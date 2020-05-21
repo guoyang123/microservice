@@ -1,9 +1,10 @@
 package com.neuedu.pay.vo;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
-public class OrderVO {
+public class OrderVO  implements Serializable {
 
 
             private Integer userId;

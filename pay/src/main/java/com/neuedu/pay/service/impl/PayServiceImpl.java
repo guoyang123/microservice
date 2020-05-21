@@ -22,9 +22,13 @@ import com.alipay.demo.trade.service.impl.AlipayTradeServiceImpl;
 import com.alipay.demo.trade.service.impl.AlipayTradeWithHBServiceImpl;
 import com.alipay.demo.trade.utils.Utils;
 import com.alipay.demo.trade.utils.ZxingUtils;
+import com.neuedu.pay.common.Consts;
 import com.neuedu.pay.common.ServerResponse;
+import com.neuedu.pay.dao.IPayDao;
+import com.neuedu.pay.pojo.PayInfo;
 import com.neuedu.pay.service.IOrderService;
 import com.neuedu.pay.service.IPayService;
+import com.neuedu.pay.vo.OrderItemVO;
 import com.neuedu.pay.vo.OrderVO;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -75,12 +79,18 @@ public class PayServiceImpl  implements IPayService {
 
     @Autowired
     IOrderService orderService;
+    @Autowired
+    IPayDao payDao;
     // 测试当面付2.0生成支付二维码
     @Override
     public ServerResponse pay(Long orderNo) {
 
         //step1:根据订单号查询订单信息->调用订单服务
          ServerResponse<OrderVO> serverResponse=orderService.getOrderDetail(orderNo);
+
+
+
+
 
          if(!serverResponse.isSuccess()){
              return serverResponse;
@@ -92,7 +102,7 @@ public class PayServiceImpl  implements IPayService {
 
         // (必填) 商户网站订单系统中唯一订单号，64个字符以内，只能包含字母、数字、下划线，
         // 需保证商户系统端不能重复，建议通过数据库sequence生成，
-        String outTradeNo = orderVO.getOrderNo()+"";
+        String outTradeNo = String.valueOf(orderVO.getOrderNo());
 
         // (必填) 订单标题，粗略描述用户的支付目的。如“xxx品牌xxx门店当面付扫码消费”
         String subject = "xxx平台订单信息";
@@ -110,7 +120,23 @@ public class PayServiceImpl  implements IPayService {
         String sellerId = "";
 
         // 订单描述，可以对交易或商品进行一个详细地描述，比如填写"购买商品2件共15.00元"
-        String body = "购买商品3件共20.00元";
+        List<OrderItemVO> orderItemVOList=orderVO.getOrderItemVOList();
+        Integer count=0;
+
+        // 商品明细列表，需填写购买商品详细信息，
+        List<GoodsDetail> goodsDetailList = new ArrayList<GoodsDetail>();
+
+
+        for(OrderItemVO orderItemVO:orderItemVOList){
+           count+= orderItemVO.getQuantity();
+
+            // 创建一个商品信息，参数含义分别为商品id（使用国标）、名称、单价（单位为分）、数量，如果需要添加商品类别，详见GoodsDetail
+            GoodsDetail goods1 = GoodsDetail.newInstance(String.valueOf(orderItemVO.getProductId()),
+                    orderItemVO.getProductName(), orderItemVO.getCurrentUnitPrice().longValue(), orderItemVO.getQuantity());
+            // 创建好一个商品后添加至商品明细列表
+            goodsDetailList.add(goods1);
+        }
+        String body = "购买商品"+count+"件共"+orderVO.getPayment().toString()+"元";
 
         // 商户操作员编号，添加此参数可以为商户操作员做销售统计
         String operatorId = "test_operator_id";
@@ -125,16 +151,7 @@ public class PayServiceImpl  implements IPayService {
         // 支付超时，定义为120分钟
         String timeoutExpress = "120m";
 
-        // 商品明细列表，需填写购买商品详细信息，
-        List<GoodsDetail> goodsDetailList = new ArrayList<GoodsDetail>();
-        // 创建一个商品信息，参数含义分别为商品id（使用国标）、名称、单价（单位为分）、数量，如果需要添加商品类别，详见GoodsDetail
-        GoodsDetail goods1 = GoodsDetail.newInstance("goods_id001", "xxx小面包", 1000, 1);
-        // 创建好一个商品后添加至商品明细列表
-        goodsDetailList.add(goods1);
 
-        // 继续创建并添加第一条商品信息，用户购买的产品为“黑人牙刷”，单价为5.00元，购买了两件
-        GoodsDetail goods2 = GoodsDetail.newInstance("goods_id002", "xxx牙刷", 500, 2);
-        goodsDetailList.add(goods2);
 
         // 创建扫码支付请求builder，设置请求参数
         AlipayTradePrecreateRequestBuilder builder = new AlipayTradePrecreateRequestBuilder()
@@ -142,7 +159,9 @@ public class PayServiceImpl  implements IPayService {
             .setUndiscountableAmount(undiscountableAmount).setSellerId(sellerId).setBody(body)
             .setOperatorId(operatorId).setStoreId(storeId).setExtendParams(extendParams)
             .setTimeoutExpress(timeoutExpress)
-            //                .setNotifyUrl("http://www.test-notify-url.com")//支付宝服务器主动通知商户服务器里指定的页面http路径,根据需要设置
+                //支付宝服务器主动通知商户服务器里指定的页面http路径,根据需要设置
+             .setNotifyUrl("http://z8babq.natappfree.cc/pay/callback.do")
+
             .setGoodsDetailList(goodsDetailList);
 
         AlipayF2FPrecreateResult result = tradeService.tradePrecreate(builder);
@@ -173,6 +192,57 @@ public class PayServiceImpl  implements IPayService {
                 break;
         }
         return  null;
+    }
+
+    @Override
+    public String orderLogic(Map<String, String> params) {
+
+        //step1: 拿到订单号并查询订单状态
+        Long orderNo=Long.parseLong(params.get("out_trade_no"));
+        ServerResponse serverResponse=orderService.getOrderDetail(orderNo);
+        if(!serverResponse.isSuccess()){
+            return "failure";
+        }
+        OrderVO orderVO=(OrderVO) serverResponse.getData();
+
+         Integer status=orderVO.getStatus();
+
+         if(status> Consts.OrderStatusEnum.ORDER_NOPAY.getStatus()){
+             //订单不需要处理
+             return "success";
+         }
+
+         //获取订单在支付宝的支付状态
+        String orderPayStatus=params.get("trade_status");
+
+         Integer orderStatus=Consts.OrderPayStatusEnum.getOrderStatus(orderPayStatus);
+
+         String paymentTime=params.get("gmt_payment");
+
+         //更新订单信息
+        ServerResponse serverResponse1= orderService.updateOrder(orderNo,orderStatus,paymentTime);
+
+       if(!serverResponse1.isSuccess()){
+           return "failure";
+       }
+
+       //将支付信息插入到支付表
+
+        String trade_no=params.get("trade_no");
+
+        PayInfo payInfo=new PayInfo();
+        payInfo.setOrderNo(orderNo);
+        payInfo.setPayPlatform(Consts.PAY_ZFBAO);
+        payInfo.setPlatformNumber(trade_no);
+        payInfo.setUserId(orderVO.getUserId());
+        payInfo.setPlatformStatus(orderPayStatus);
+
+        int payCount=payDao.insert(payInfo);
+        if(payCount==0){
+            return "failure";
+        }
+
+        return "success";
     }
 
     // 简单打印应答

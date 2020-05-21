@@ -54,6 +54,7 @@ public class Consts {
         NO_EXISTS_ORDER(305,"订单不存在"),
         NO_UNPAY_ORDER(306,"不是未支付订单"),
         ORDERNO_NOT_EMPYT(307,"订单号不能为空"),
+        ORDER_STATUS_UPDATE_FAIL(308,"订单状态更新失败"),
         ;
         private int  status;
         private String msg;

@@ -1,8 +1,9 @@
 package com.neuedu.order.vo;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class OrderItemVO {
+public class OrderItemVO implements Serializable {
 
            private Long orderNo;
             private Integer productId;

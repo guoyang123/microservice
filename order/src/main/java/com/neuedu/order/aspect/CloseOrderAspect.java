@@ -46,7 +46,7 @@ public class CloseOrderAspect {
                  //   redisTemplate.opsForValue().set(String.valueOf(orderNo),String.valueOf(orderNo),orderTimeout*3600, TimeUnit.SECONDS);
                     amqpTemplate.convertAndSend("order.exchange","order.queue.routingkey",orderNo,message -> {
 
-                        message.getMessageProperties().setExpiration(String.valueOf(20000));
+                        message.getMessageProperties().setExpiration(String.valueOf(orderTimeout*3600));
                         return message;
                     });
                 }

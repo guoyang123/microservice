@@ -1,4 +1,6 @@
 package com.neuedu.order.vo;
 
-public class ShippingVO {
+import java.io.Serializable;
+
+public class ShippingVO  implements Serializable {
 }

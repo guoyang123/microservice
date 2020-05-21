@@ -18,4 +18,5 @@ public interface IOrderService {
     ServerResponse findOrderByOrderNo(Long orderNo);
 
 
+    ServerResponse updateOrderStautsAndPaymentTime(Long orderNo,Integer status,String paymentTime);
 }

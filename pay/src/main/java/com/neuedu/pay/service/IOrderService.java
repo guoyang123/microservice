@@ -14,4 +14,11 @@ public interface IOrderService {
     @Headers({"Content-Type:application/json","Accept:application/json"})
     public ServerResponse<OrderVO> getOrderDetail(@PathVariable("orderNo")Long orderNo);
 
+    @RequestMapping("/order/{orderNo}/{status}/{paymentTime}")
+    @Headers({"Content-Type:application/json","Accept:application/json"})
+    public ServerResponse updateOrder(@PathVariable("orderNo")Long orderNo,
+                                      @PathVariable("status")Integer status,
+                                      @PathVariable("paymentTime")String paymentTime);
+
+
 }

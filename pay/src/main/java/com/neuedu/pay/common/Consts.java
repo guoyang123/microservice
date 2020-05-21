@@ -8,6 +8,8 @@ public class Consts {
 
     public static final Integer CHECKED=1;
 
+    public static final Integer PAY_ZFBAO=1;
+
 
     public static   enum ResponseEnum{
 
@@ -118,6 +120,56 @@ public class Consts {
         public void setDesc(String desc) {
             this.desc = desc;
         }
+    }
+
+
+    public static  enum OrderPayStatusEnum{
+
+        /**
+         * 订单状态：0-已取消 10-未付款 20-已付款 30-已发货 40-交易成功 50-交易关闭
+         * */
+
+        ORDER_UNPAY(10,"WAIT_BUYER_PAY"),
+        ORDER_CLOSE(50,"TRADE_CLOSED"),
+        ORDER_PAYED(20,"TRADE_SUCCESS"),
+        ORDER_FINISH(40,"TRADE_FINISHED"),
+
+        ;
+
+        private Integer status;
+        private String desc;
+
+        OrderPayStatusEnum(Integer status,String desc){
+            this.status=status;
+            this.desc=desc;
+        }
+
+        public Integer getStatus() {
+            return status;
+        }
+
+        public void setStatus(Integer status) {
+            this.status = status;
+        }
+
+        public String getDesc() {
+            return desc;
+        }
+
+        public void setDesc(String desc) {
+            this.desc = desc;
+        }
+
+        public static Integer getOrderStatus(String desc){
+
+            for(OrderPayStatusEnum orderPayStatusEnum:values()){
+                if(desc.equals(orderPayStatusEnum.getDesc())){
+                    return orderPayStatusEnum.getStatus();
+                }
+            }
+            return 0;
+        }
+
     }
 
 }

@@ -33,12 +33,17 @@ public class OrderController {
         return orderService.findOrderByOrderNo(orderNo);
     }
 
-    @Autowired
-    StringRedisTemplate redisTemplate;
 
-    @RequestMapping("/test")
-    public String test(){
-        redisTemplate.opsForValue().set("a","aa100");
-        return redisTemplate.opsForValue().get("a");
+
+
+    @RequestMapping("{orderNo}/{status}/{paymentTime}")
+    public ServerResponse updateOrderStautsAndPaymentTime(@PathVariable("orderNo")Long orderNo,
+                                                          @PathVariable("status")Integer status,
+                                                          @PathVariable("paymentTime")String paymentTime){
+
+        return orderService.updateOrderStautsAndPaymentTime(orderNo,status,paymentTime);
     }
+
+
+
 }

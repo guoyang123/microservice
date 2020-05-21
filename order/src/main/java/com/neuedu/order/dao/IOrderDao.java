@@ -17,4 +17,9 @@ public interface IOrderDao {
     int closeOrder(@Param("order") Order order);
 
     Order findOrderByOrderNo(@Param("orderNo") Long orderNo);
-}
+
+    int updateOrderStautsAndPaymentTime(@Param("orderNo")Long orderNo,
+                                        @Param("status")Integer status,
+                                        @Param("paymentTime")Date paymentTime) ;
+
+    }

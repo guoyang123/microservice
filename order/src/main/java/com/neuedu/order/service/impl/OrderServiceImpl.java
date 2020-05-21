@@ -137,9 +137,26 @@ public class OrderServiceImpl implements IOrderService {
         Order order=orderDao.findOrderByOrderNo(orderNo);
         if(order==null){
             return ServerResponse.createServerResponseByFail(Consts.ResponseEnum.NO_EXISTS_ORDER.getStatus(),Consts.ResponseEnum.NO_EXISTS_ORDER.getMsg());
-
         }
-        return ServerResponse.createServerResponseBySuccess(order);
+
+        //查询订单明细
+        List<OrderItem> orderItemList=orderItemDao.findOrderItemsByOrderNo(orderNo);
+
+        OrderVO orderVO=assembleOrderVO(order,orderItemList,order.getShippingId());
+
+        return ServerResponse.createServerResponseBySuccess(orderVO);
+    }
+
+    @Override
+    public ServerResponse updateOrderStautsAndPaymentTime(Long orderNo, Integer status, String paymentTime) {
+
+
+
+        int count=orderDao.updateOrderStautsAndPaymentTime(orderNo,status,DateUtils.str2Date(paymentTime));
+        if(count==0){
+            return ServerResponse.createServerResponseByFail(Consts.ResponseEnum.ORDER_STATUS_UPDATE_FAIL.getStatus(),Consts.ResponseEnum.ORDER_STATUS_UPDATE_FAIL.getMsg());
+        }
+        return ServerResponse.createServerResponseBySuccess();
     }
 
     private ServerResponse reduceStock(List<OrderItem> orderItemList){

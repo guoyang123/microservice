@@ -4,8 +4,10 @@ package com.neuedu.order.common;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import java.io.Serializable;
+
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-public class ServerResponse<T> {
+public class ServerResponse<T> implements Serializable {
 
     private  int status; //状态码 0：接口调用成功，有返回值； 非0：接口调用失败，无返回值,失败信息放到msg中
     private String msg;

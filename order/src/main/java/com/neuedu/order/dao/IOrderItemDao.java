@@ -9,4 +9,6 @@ public interface IOrderItemDao {
 
 
     int insertBatch(@Param("orderItemList") List<OrderItem> orderItemList);
+
+    List<OrderItem> findOrderItemsByOrderNo(@Param("orderNo") Long orderNo);
 }

@@ -66,4 +66,21 @@ public class RabbitMQConfig {
     public Binding bindingDeadExchangeAndDeadQueue(){
         return BindingBuilder.bind(deadQueue()).to(deadExchange()).with("order.close.queue.routinkey");
     }
+
+    @Bean
+    public Queue payQueue(){
+        return QueueBuilder.durable("order.pay.queue")
+                .build();
+    }
+    /**
+     * 定义交换机
+     * */
+    @Bean
+    public DirectExchange payExchagne(){
+        return new DirectExchange("pay.exchange",true,false);
+    }
+    @Bean
+    public Binding bindingPayExchangeAndpayQueue(){
+        return BindingBuilder.bind(payQueue()).to(payExchagne()).with("order.query.routinkey");
+    }
 }
