@@ -10,16 +10,32 @@ eureka:
     service-url:
       defaultZone: http://localhost:8761/eureka,http://localhost:8762/eureka
 
+
 zuul:
   routes:
     myUser:
       path: /myUser/**
       serviceId: user
 
+
     myCart:
       path: /myCart/**
       serviceId: cart
+
+    myProduct:
+      path: /myProduct/**
+      serviceId: product
+
   ignored-patterns:
     - /myUser/user/port
     - /user/user/port
+  host:
+    connect-timeout-millis: 15000
+    socket-timeout-millis: 60000
+  sensitive-headers:
+
+
+ribbon:        #设置ribbon的超时时间小于zuul的超时时间
+  ReadTimeout: 10000
+  ConnectTimeout: 10000
 

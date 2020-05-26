@@ -40,26 +40,26 @@ public class CheckZuulFilter extends ZuulFilter {
     public Object run() throws ZuulException {//执行过滤逻辑的核心方法
         //执行过滤
 
-        RequestContext requestContext=RequestContext.getCurrentContext();
-        HttpServletRequest request= requestContext.getRequest();
-
-        String token=request.getParameter("token");
-
-        if(token==null||token.equals("")){
-
-            requestContext.setSendZuulResponse(false);//拦截请求
-
-          HttpServletResponse response= requestContext.getResponse();
-
-          response.reset();
-
-            try {
-                PrintWriter printWriter= response.getWriter();
-                printWriter.print("token  need !!!");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+//        RequestContext requestContext=RequestContext.getCurrentContext();
+//        HttpServletRequest request= requestContext.getRequest();
+//
+//        String token=request.getParameter("token");
+//
+//        if(token==null||token.equals("")){
+//
+//            requestContext.setSendZuulResponse(false);//拦截请求
+//
+//          HttpServletResponse response= requestContext.getResponse();
+//
+//          response.reset();
+//
+//            try {
+//                PrintWriter printWriter= response.getWriter();
+//                printWriter.print("token  need !!!");
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
 
 
         return null;

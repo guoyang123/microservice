@@ -21,6 +21,7 @@ public class OrderApplicationInterceptorConfig implements WebMvcConfigurer {
         List<String> list=new ArrayList<>();
         list.add("/order/**");
         registry.addInterceptor(checkLoginInterceptor)
-        .addPathPatterns(list);
+        .addPathPatterns(list)
+        .excludePathPatterns("/order/test");
     }
 }

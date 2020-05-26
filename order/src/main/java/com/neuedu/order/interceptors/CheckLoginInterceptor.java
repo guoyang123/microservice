@@ -26,11 +26,6 @@ public class CheckLoginInterceptor implements HandlerInterceptor {
 
        HttpSession session= request.getSession();
 
-        UserInfo user=new UserInfo();
-        user.setId(21);
-        session.setAttribute(Consts.CURRENT_USER,user);
-
-
         UserInfo userInfo= (UserInfo) session.getAttribute(Consts.CURRENT_USER);
 
        if(userInfo!=null){
