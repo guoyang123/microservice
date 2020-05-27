@@ -3,6 +3,7 @@
     <img alt="Vue logo" src="./assets/logo.png">
     <HelloWorld msg="Welcome to Your Vue.js App"/>
 	
+	<span>username:{{userInfo.username}}</span>
 	
 	<router-link :to="{name:'test',params:{id:100}}">go to custom</router-link>
 	<router-view></router-view>
@@ -18,6 +19,16 @@ export default {
   name: 'App',
   components: {
     HelloWorld
+  },
+  computed:{
+  userInfo:{
+  	get:function(){
+  		return this.$store.state.userInfo
+  	},
+  	set:function(v){
+  		this.$store.commit("setUserInfo",v)
+  	}
+  }
   }
 }
 </script>
