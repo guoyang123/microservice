@@ -3,9 +3,15 @@ import Vue from 'vue'
   import router from '@/router/router.js'
 import  axios from 'axios' 
 import Vuex from 'vuex'
-
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
 Vue.config.productionTip = false
 
+import Vant from 'vant';
+import 'vant/lib/index.css';
+
+Vue.use(Vant);
+Vue.use(ElementUI);
 Vue.use(axios)
 Vue.use(Vuex)
 // true:可以携带cookie

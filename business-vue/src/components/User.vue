@@ -8,8 +8,9 @@
 	<input type="text"  v-model="username" /><br/>
 	<input type="password"  v-model="password" /><br/>
 	 <button v-on:click="login">登录</button><br/>
-	
+	 <el-button type="primary">主要按钮</el-button>
 	 <button v-on:click="cart">购物车列表</button><br/>
+	 <van-button type="warning">警告按钮</van-button>
 		<span>username: {{userInfo.username}}</span>
 		<router-link to="/home">home</router-link>
 	<!-- 	<router-view></router-view> -->
